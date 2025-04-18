@@ -1,0 +1,31 @@
+credentials.json
+token.json
+venv/
+.env
+*.env
+*.pem
+*.key
+*.crt
+secrets/
+*.sqlite3
+
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+venv/
+.Python
+
+# VSCode or JetBrains IDE settings
+.vscode/
+.idea/
+
+# macOS 系統檔
+.DS_Store
+
+# logs 或暫存
+*.log
+*.tmp
+temp/
+cache/
