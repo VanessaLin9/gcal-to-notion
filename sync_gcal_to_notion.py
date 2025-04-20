@@ -39,6 +39,7 @@ def get_next_event():
 def create_notion_item(event):
     title = event['summary']
     start_time = event['start'].get('dateTime', event['start'].get('date'))
+    end_time = event['end'].get('dateTime', event['end'].get('date'))
 
     url = "https://api.notion.com/v1/pages"
     headers = {
@@ -54,8 +55,12 @@ def create_notion_item(event):
                 "title": [{ "text": { "content": title } }]
             },
             "執行時間": {
-                "date": { "start": start_time }
+                "date": { "start": start_time, "end": end_time }
+            },
+            "清單":{
+                "select": { "name": "Google Calendar" }
             }
+
         }
     }
 
