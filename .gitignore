@@ -29,3 +29,4 @@ venv/
 *.tmp
 temp/
 cache/
+dev.sh
