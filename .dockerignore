@@ -1,0 +1,17 @@
+# 不要打包你的虛擬環境
+venv/
+
+# 不要打包機密檔案
+.env
+credentials.json
+token.json
+
+# 不要打包 IDE 設定
+.vscode/
+.idea/
+
+# no垃圾檔
+__pycache__/
+*.pyc
+*.log
+.DS_Store
