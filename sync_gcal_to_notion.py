@@ -59,8 +59,10 @@ def create_notion_item(event):
             },
             "清單":{
                 "select": { "name": "Google Calendar" }
+            },
+            "event_id": {
+                "rich_text": [{ "text": { "content": event['id'] } }]
             }
-
         }
     }
 
