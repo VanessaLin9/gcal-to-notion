@@ -30,3 +30,4 @@ venv/
 temp/
 cache/
 dev.sh
+.venv/
