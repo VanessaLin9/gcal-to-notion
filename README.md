@@ -49,15 +49,20 @@ docker run -it --env-file .env \
 3. 本地開發
 - 本地開發使用虛擬環境
 - 進入專案後進入虛擬環境安裝相關需要套件
-```bash
-   source .venv/bin/activate
+### 🧰 開發用快捷指令（Makefile）
 
-   pip install -r requirements.txt
+| 指令	| 說明 |
+|---|---|
+| make install | 安裝虛擬環境需要的所有套件 |
+| make run | 執行主程式 sync_gcal_to_notion.py |
+| make dev | 啟動虛擬環境並執行主程式 |
+| make clean | 移除 Python 的暫存檔案（如 __pycache__） |
+| make env | 顯示目前使用的python與pip |
 
-```
-- 離開的時候
+執行範例：
 ```bash
-   deactivate
+  make install
+  make run
 ```
 
 ---
