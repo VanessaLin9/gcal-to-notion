@@ -14,7 +14,9 @@ NOTION_DATABASE_ID = os.getenv("NOTION_DATABASE_ID")
 # Google Calendar API Scope
 SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
 
-def get_next_event():
+DATE_AHEAD = 14  # Check for events in the next 14 days
+
+def get_upcoming_events(check_range):
     creds = None
     if os.path.exists('token.json'):
         creds = Credentials.from_authorized_user_file('token.json', SCOPES)
@@ -26,16 +28,40 @@ def get_next_event():
             token.write(creds.to_json())
 
     service = build('calendar', 'v3', credentials=creds)
-    now = datetime.datetime.utcnow().isoformat() + 'Z'
+    now = datetime.datetime.utcnow()
+    future = now + datetime.timedelta(days=check_range)
     events_result = service.events().list(
-        calendarId='primary', timeMin=now,
-        maxResults=1, singleEvents=True,
+        calendarId='primary', 
+        timeMin=now.isoformat() + 'Z',
+        timeMax=future.isoformat() + 'Z',
+        maxResults=100, 
+        singleEvents=True,
         orderBy='startTime').execute()
+
     events = events_result.get('items', [])
     if not events:
         print('No upcoming events found.')
         return None
-    return events[0]
+    return events
+
+def check_event_exists(event_id):
+    url = f"https://api.notion.com/v1/databases/{NOTION_DATABASE_ID}/query"
+    headers = {
+        "Authorization": f"Bearer {NOTION_TOKEN}",
+        "Content-Type": "application/json",
+        "Notion-Version": "2022-06-28"
+    }
+
+    data = {
+        "filter": {
+            "property": "event_id",
+            "rich_text": {
+                "equals": event_id
+            }
+        }
+    }
+    res = requests.post(url, headers=headers, json=data)
+    return res.status_code == 200 and len(res.json().get('results', [])) > 0
 
 def create_notion_item(event):
     title = event['summary']
@@ -74,7 +100,15 @@ def create_notion_item(event):
         print("❌ Failed to add to Notion:", res.text)
 
 if __name__ == '__main__':
-    event = get_next_event()
-    if event:
-        print(f"🗓️  Next event: {event['summary']} @ {event['start'].get('dateTime', event['start'].get('date'))}")
-        create_notion_item(event)
+    event = get_upcoming_events(DATE_AHEAD)
+    if not event:
+        print("No events found in the next 14 days.")
+        exit(0)
+    else:
+        for event in event:
+            if not check_event_exists(event['id']):
+                print(f"✅ Event does not exist in Notion: {event['summary']}")
+                create_notion_item(event)
+            else:
+                # If the event already exists in Notion, skip it
+                print(f"❌ Event already exists in Notion: {event['summary']}")
