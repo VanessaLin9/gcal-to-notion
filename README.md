@@ -21,14 +21,15 @@
 docker pull vanessalin9/gcal-to-notion:latest
 ```
 
-🛠️ 使用說明
-1. 準備需要的檔案
-- credentials.json
-  - 你的 Google API 憑證 (OAuth 2.0 用戶端 ID)
-- token.json
-  - 授權完成後取得的存取憑證（access token & refresh token）
-- .env
-  - 包含你的 Notion API 秘密金鑰與資料庫ID
+## 🛠️ 使用說明
+### 🐳 方式一：使用 Docker 執行（適合快速體驗或部署）
+準備以下檔案於當前資料夾：
+
+credentials.json：你的 Google API 憑證（OAuth 2.0）
+
+token.json：授權後取得的存取憑證（access token & refresh token）
+
+.env：包含 Notion Token 與資料庫 ID，格式如下：
    
   請參考 .env.example 或下面寫法：
 ```bash
@@ -43,12 +44,26 @@ docker run -it --env-file .env \
   -v $(pwd)/token.json:/app/token.json \
   vanessalin9/gcal-to-notion:latest
 ```
-✅
-這樣會自動同步最近的 Google Calendar 活動到你的 Notion 資料庫。
+✅ 這樣會自動同步「未來 14 天內的所有 Google Calendar 活動」到你的 Notion 資料庫，已存在的活動會自動跳過避免重複。
 
-3. 本地開發
-- 本地開發使用虛擬環境
-- 進入專案後進入虛擬環境安裝相關需要套件
+---
+### 💻 方式二：本地端開發環境（適合進一步修改與測試）
+1. 建立虛擬環境並安裝依賴：
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+2. 準備憑證與設定：
+```bash
+credentials.json, token.json, .env 檔案同上
+```
+3. 執行同步：
+```bash
+python sync_gcal_to_notion.py
+```
+4. 開發加速：可使用 Makefile 快捷指令（詳見下節）
+
 ### 🧰 開發用快捷指令（Makefile）
 
 | 指令	| 說明 |
@@ -68,9 +83,10 @@ docker run -it --env-file .env \
 ---
 
 ### 📄 功能特色
-📅 從 Google Calendar 自動讀取活動
 
-📝 新增活動到 Notion 指定資料庫
+📅 自動同步 Google Calendar 中未來 14 天的所有活動
+
+🕒 透過 GitHub Actions 定期排程，每日 00:00 自動執行
 
 🐳 完全 Docker 化，不需手動安裝任何依賴
 
