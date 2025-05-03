@@ -28,8 +28,8 @@ jobs:
 
             - name : Restore credentials and tokens
               run: |
-                echo "$GOOGLE_CREDENTIALS" | base64 -d > credentials.json
-                echo "$GOOGLE_TOKEN" | base64 -d > token.json
+                echo -n "$GOOGLE_CREDENTIALS" | base64 -d > credentials.json
+                echo -n "$GOOGLE_TOKEN" | base64 -d > token.json
     
             - name: Run script
               run: |
