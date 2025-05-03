@@ -104,4 +104,7 @@ python sync_gcal_to_notion.py
 ---
 
 📄 License:
-本專案僅供個人學習與私人使用。
+
+本專案使用 [GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0.html) 授權。  
+任何人皆可自由使用、修改與散布本專案程式碼，但需遵守開源原則，保留授權聲明與原作者資訊，且不得轉為閉源或專有軟體使用。
+
