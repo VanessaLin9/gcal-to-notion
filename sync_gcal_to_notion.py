@@ -10,6 +10,7 @@ from googleapiclient.discovery import build
 load_dotenv()
 NOTION_TOKEN = os.getenv("NOTION_TOKEN")
 NOTION_DATABASE_ID = os.getenv("NOTION_DATABASE_ID")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Google Calendar API Scope
 SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
@@ -21,7 +22,9 @@ def get_upcoming_events(check_range):
     if os.path.exists('token.json'):
         creds = Credentials.from_authorized_user_file('token.json', SCOPES)
     else:
-        flow = InstalledAppFlow.from_client_secrets_file('credentials.json', SCOPES)
+        flow = InstalledAppFlow.from_client_secrets_file(
+            os.path.join(BASE_DIR, 'credentials.json'), SCOPES
+        )
         creds = flow.run_console()
         # Save the credentials for the next run
         with open('token.json', 'w') as token:

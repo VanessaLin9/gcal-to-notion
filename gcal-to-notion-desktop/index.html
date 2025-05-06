@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>GCal to Notion Desktop</title>
+</head>
+<body>
+  <h1>Hello, GCal to Notion!</h1>
+<button id="syncBtn">Sync</button>
+<pre id="output"></pre>
+
+<script>
+    var btn = document.getElementById('syncBtn');
+    var output = document.getElementById('output');
+
+    btn.addEventListener('click', () => {
+        console.log('hihi');
+        window.electronAPI.runSync();
+    });
+    window.electronAPI.onSyncResult((message) => {
+      output.textContent = message;
+    });
+</script>
+</body>
+</html>
