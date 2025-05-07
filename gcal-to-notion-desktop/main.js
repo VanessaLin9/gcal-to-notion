@@ -31,14 +31,17 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit();
 });
 
-ipcMain.on('open-gcal-to-notion', (event) => {
-    console.log('getEvent!');
-    exec('../.venv/bin/python ../sync_gcal_to_notion.py', (error, stdout, stderr) => {
+ipcMain.handle('run-sync', async () => {
+    console.log("Get event!");
+    return new Promise((resolve) => {
+      exec('../.venv/bin/python ../sync_gcal_to_notion.py', (error, stdout, stderr) => {
         if (error) {
-          console.error(`exec error: ${error}`);
+          console.error('Exec Error:', error.message);
+          resolve(`❌ Error: ${stderr || error.message}`);
           return;
         }
-        console.log(`stdout: ${stdout}`);
-        if (stderr) console.error(`stderr: ${stderr}`);
-      });      
+        resolve(`✅ Python Script Output:\n${stdout}`);
+      });
+    });
   });
+  

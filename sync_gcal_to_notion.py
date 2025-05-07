@@ -103,15 +103,17 @@ def create_notion_item(event):
         print("❌ Failed to add to Notion:", res.text)
 
 if __name__ == '__main__':
+    results = []
     event = get_upcoming_events(DATE_AHEAD)
     if not event:
-        print("No events found in the next 14 days.")
-        exit(0)
+        results.append("No events found in the next 14 days.")
     else:
         for event in event:
             if not check_event_exists(event['id']):
-                print(f"✅ Event does not exist in Notion: {event['summary']}")
+                results.append(f"✅ Event does not exist in Notion: {event['summary']}")
                 create_notion_item(event)
             else:
-                # If the event already exists in Notion, skip it
-                print(f"❌ Event already exists in Notion: {event['summary']}")
+                results.append(f"❌ Event already exists in Notion: {event['summary']}")
+    
+    print("\n".join(results))
+

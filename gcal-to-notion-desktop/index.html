@@ -14,12 +14,12 @@
     var output = document.getElementById('output');
 
     btn.addEventListener('click', () => {
-        console.log('hihi');
-        window.electronAPI.runSync();
+    console.log('hihi');
+    window.electronAPI.runSync().then((result) => {
+        console.log('[RECEIVED]', result);
+        output.textContent = result;
     });
-    window.electronAPI.onSyncResult((message) => {
-      output.textContent = message;
-    });
+});
 </script>
 </body>
 </html>
