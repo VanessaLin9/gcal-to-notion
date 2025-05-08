@@ -30,14 +30,14 @@ docker pull vanessalin9/gcal-to-notion:latest
 ```
 
 ## 🛠️ 使用說明
-### 🐳 方式一：使用 Docker 執行（適合快速體驗或部署）
+### 🐳 使用 Docker 執行
 準備以下檔案於當前資料夾：
 
-credentials.json：你的 Google API 憑證（OAuth 2.0）
+- credentials.json：你的 Google API 憑證（OAuth 2.0）
 
-token.json：授權後取得的存取憑證（access token & refresh token）
+- token.json：授權後取得的存取憑證（access token & refresh token）
 
-.env：包含 Notion Token 與資料庫 ID，格式如下：
+- .env：包含 Notion Token 與資料庫 ID，格式如下：
    
   請參考 .env.example 或下面寫法：
 ```bash
@@ -52,27 +52,18 @@ docker run -it --env-file .env \
   -v $(pwd)/token.json:/app/token.json \
   vanessalin9/gcal-to-notion:latest
 ```
-✅ 這樣會自動同步「未來 14 天內的所有 Google Calendar 活動」到你的 Notion 資料庫，已存在的活動會自動跳過避免重複。
 
 ---
-### 💻 方式二：本地端開發環境（適合進一步修改與測試）
-1. 建立虛擬環境並安裝依賴：
+### 💻 本地開發
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-```
-2. 準備憑證與設定：
-```bash
-credentials.json, token.json, .env 檔案同上
-```
-3. 執行同步：
-```bash
 python sync_gcal_to_notion.py
 ```
-4. 開發加速：可使用 Makefile 快捷指令（詳見下節）
 
-### 🧰 開發用快捷指令（Makefile）
+📂 開發加速：可使用 Makefile 快捷指令
+- 目前支援的指令：
 
 | 指令	| 說明 |
 |---|---|
@@ -82,61 +73,47 @@ python sync_gcal_to_notion.py
 | make clean | 移除 Python 的暫存檔案（如 __pycache__） |
 | make env | 顯示目前使用的python與pip |
 
-執行範例：
-```bash
-  make install
-  make run
-```
 ---
-### 🖥️ 桌面版：Electron 手動同步工具（可選用）
-本專案現在支援一個桌面版本，透過 Electron 打包成簡易的 GUI，讓你可以手動一鍵同步 Google Calendar 至 Notion，非常適合：
+### 🧠 GitHub Actions 自動同步
+- 每天早上 08:00 自動同步 Google Calendar → Notion
 
-- 不想設定自動排程
+- 請將 credentials、token 與 Notion Secret 加入 GitHub Secrets
 
-- 希望自訂同步時間、即時確認結果
-
-- 未來將支援參數設定介面
-
-#### 📁 子資料夾說明
-桌面版程式碼位於 gcal-to-notion-desktop/ 子資料夾中。
-主要結構如下：
-
-```bash
-gcal-to-notion-desktop/
-├── main.js         # Electron 主行程邏輯，負責呼叫 Python
-├── preload.js      # 前後端通訊橋接
-├── index.html      # 前端畫面
-├── package.json    # npm 套件與啟動設定
-├── ...
-```
-#### ▶️ 執行方式
-進入子資料夾後，安裝依賴並啟動：
+- .github/workflows/sync.yml 內部會自動解碼並執行主程式
+---
+### 🖥️ 方式三：桌面版 Electron 手動同步工具（可選用）
+📁 子資料夾：gcal-to-notion-desktop/
 
 ```bash
 cd gcal-to-notion-desktop
 npm install
 npm start
 ```
-#### 🔒 安全性說明
-token.json 及 credentials.json 為 OAuth 授權用檔案
+- 適合不熟命令列者、需要隨時手動同步者
 
-此資料只會存放於本地端，且已透過 .gitignore 排除在版本控制外
+- 檔案仍需放置 credentials.json / token.json / .env
 
-GitHub Actions 使用的金鑰由 Secrets 管理，與桌面版獨立，互不干擾
+- 同步使用母資料夾的 Python 腳本，不影響 GitHub Actions
+---
+### ✨ 功能特色
+- 📅 同步「未來 14 天內」的 Google Calendar 活動
+
+- 🧠 自動排程（GitHub Actions）
+
+- 🔁 已同步的事件不會重複建立（依 event_id 判斷）
+
+- 🔒 OAuth 2.0 驗證，支援 refresh token 自動更新
+
+- 🐳 完整 Docker 化 + 本地虛擬環境支援
 
 ---
+#### 🔒 安全性說明
 
-### 📄 功能特色
+- 所有敏感資訊 (token.json, .env) 均已加至 .gitignore
 
-📅 自動同步 Google Calendar 中未來 14 天的所有活動
+- GitHub 使用 base64 加密儲存在 Secrets 中
 
-🕒 透過 GitHub Actions 定期排程，每日 00:00 自動執行
-
-🐳 完全 Docker 化，不需手動安裝任何依賴
-
-🔒 支援 OAuth 2.0 安全認證
-
-🎯 最小可執行版本，易於後續擴充與部署
+- 桌面版不影響 GitHub Actions，自成一體
 
 ---
 
@@ -149,6 +126,5 @@ GitHub Actions 使用的金鑰由 Secrets 管理，與桌面版獨立，互不�
 
 📄 License:
 
-本專案使用 [GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0.html) 授權。  
-任何人皆可自由使用、修改與散布本專案程式碼，但需遵守開源原則，保留授權聲明與原作者資訊，且不得轉為閉源或專有軟體使用。
+本專案採用 GPL v3 授權，允許使用、修改與散布，唯須保留原作者資訊與授權聲明，並不得封閉原始碼。
 
