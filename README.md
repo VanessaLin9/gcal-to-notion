@@ -5,8 +5,16 @@
 ![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)
 ![Powered by Notion API](https://img.shields.io/badge/Powered%20by-Notion%20API-black)
 
-同步你的 Google Calendar 活動到 Notion 資料庫的小工具。  
-透過 Docker 部署，輕量快速、隨時可以啟動。
+將 Google Calendar 活動自動同步到 Notion 資料庫的小工具
+支援多種執行方式，彈性又易於擴充：
+
+🐳 Docker 執行：快速打包、跨平台部署
+
+🧠 GitHub Actions 自動同步：每日排程、自動化管理
+
+🖥️ Electron 桌面應用：一鍵手動同步，適合不習慣命令列的使用者
+
+💻 本地 Python 開發：簡潔、可自訂同步邏輯。
 
 ---
 
@@ -79,6 +87,42 @@ python sync_gcal_to_notion.py
   make install
   make run
 ```
+---
+### 🖥️ 桌面版：Electron 手動同步工具（可選用）
+本專案現在支援一個桌面版本，透過 Electron 打包成簡易的 GUI，讓你可以手動一鍵同步 Google Calendar 至 Notion，非常適合：
+
+- 不想設定自動排程
+
+- 希望自訂同步時間、即時確認結果
+
+- 未來將支援參數設定介面
+
+#### 📁 子資料夾說明
+桌面版程式碼位於 gcal-to-notion-desktop/ 子資料夾中。
+主要結構如下：
+
+```bash
+gcal-to-notion-desktop/
+├── main.js         # Electron 主行程邏輯，負責呼叫 Python
+├── preload.js      # 前後端通訊橋接
+├── index.html      # 前端畫面
+├── package.json    # npm 套件與啟動設定
+├── ...
+```
+#### ▶️ 執行方式
+進入子資料夾後，安裝依賴並啟動：
+
+```bash
+cd gcal-to-notion-desktop
+npm install
+npm start
+```
+#### 🔒 安全性說明
+token.json 及 credentials.json 為 OAuth 授權用檔案
+
+此資料只會存放於本地端，且已透過 .gitignore 排除在版本控制外
+
+GitHub Actions 使用的金鑰由 Secrets 管理，與桌面版獨立，互不干擾
 
 ---
 
