@@ -2,7 +2,6 @@
 
 [![Docker Pulls](https://img.shields.io/docker/pulls/vanessalin9/gcal-to-notion)](https://hub.docker.com/r/vanessalin9/gcal-to-notion)
 ![Python](https://img.shields.io/badge/Python-3.11-blue)
-![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)
 ![Powered by Notion API](https://img.shields.io/badge/Powered%20by-Notion%20API-black)
 
 將 Google Calendar 活動自動同步到 Notion 資料庫的小工具
