@@ -6,20 +6,38 @@
 </head>
 <body>
   <h1>Hello, GCal to Notion!</h1>
+<button id="selectCredentials">選擇 credentials.json</button>
+<button id="selectToken">選擇 token.json</button>
+<p id="status"></p>
+
 <button id="syncBtn">Sync</button>
 <pre id="output"></pre>
 
 <script>
-    var btn = document.getElementById('syncBtn');
-    var output = document.getElementById('output');
+  var btn = document.getElementById('syncBtn');
+  var output = document.getElementById('output');
+  const status = document.getElementById('status');
+  const selectCredentials = document.getElementById('selectCredentials');
+  const selectToken = document.getElementById('selectToken');
 
-    btn.addEventListener('click', () => {
+  btn.addEventListener('click', () => {
     console.log('hihi');
-    window.electronAPI.runSync().then((result) => {
+      window.electronAPI.runSync().then((result) => {
         console.log('[RECEIVED]', result);
         output.textContent = result;
-    });
-});
+      });
+  });
+  
+  selectCredentials.addEventListener('click', async() => {
+    const message = await window.electronAPI.selectCredentials();
+    status.textContent = message;
+  });
+
+  selectToken.addEventListener('click', async() => {
+    const message = await window.electronAPI.selectToken();
+    status.textContent = message;
+  });
+
 </script>
 </body>
 </html>
