@@ -1,9 +1,10 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
-contextBridge.exposeInMainWorld('electronAPI', {
+contextBridge.exposeInMainWorld('electron', {
     runSync: () => ipcRenderer.invoke('run-sync'),
-    selectCredentials: () => ipcRenderer.invoke('select-credential'),
+    selectCredential: () => ipcRenderer.invoke('select-credential'),
     selectToken: () => ipcRenderer.invoke('select-token'),
-    onFileSelected: (callback) => ipcRenderer.on('file-selected', (event, message) => callback(message)),
+    loginGoogle: () => ipcRenderer.invoke('login-google'),
+    deleteToken: () => ipcRenderer.invoke('delete-token')
 });
 

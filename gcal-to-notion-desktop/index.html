@@ -2,12 +2,15 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>GCal to Notion Desktop</title>
+  <title>Google Calendar to Notion Sync</title>
 </head>
 <body>
   <h1>Hello, GCal to Notion!</h1>
+<button id="runSync">同步行事曆</button>
 <button id="selectCredentials">選擇 credentials.json</button>
 <button id="selectToken">選擇 token.json</button>
+<button id="loginGoogle">登入 Google</button>
+<button id="deleteToken">刪除 Token</button>
 <p id="status"></p>
 
 <button id="syncBtn">Sync</button>
@@ -19,6 +22,8 @@
   const status = document.getElementById('status');
   const selectCredentials = document.getElementById('selectCredentials');
   const selectToken = document.getElementById('selectToken');
+  const loginGoogle = document.getElementById('loginGoogle');
+  const deleteToken = document.getElementById('deleteToken');
 
   btn.addEventListener('click', () => {
     console.log('hihi');
@@ -27,15 +32,25 @@
         output.textContent = result;
       });
   });
+
+  loginGoogle.addEventListener('click', async () => {
+    const result = await window.electron.loginGoogle();
+    alert(result);
+  });
   
   selectCredentials.addEventListener('click', async() => {
-    const message = await window.electronAPI.selectCredentials();
+    const message = await window.electron.selectCredential();
     status.textContent = message;
   });
 
   selectToken.addEventListener('click', async() => {
-    const message = await window.electronAPI.selectToken();
+    const message = await window.electron.selectToken();
     status.textContent = message;
+  });
+
+  deleteToken.addEventListener('click', async () => {
+    const result = await window.electron.deleteToken();
+    alert(result);
   });
 
 </script>

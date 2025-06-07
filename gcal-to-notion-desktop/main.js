@@ -67,6 +67,34 @@ app.whenReady().then(() => {
       return '❌ 未選取任何檔案';
   });
 
+  ipcMain.handle('login-google', async () => {
+    console.log("Login Google!");
+    return new Promise((resolve) => {
+      exec('../.venv/bin/python ../sync_gcal_to_notion.py --force-login',
+        { env: process.env },
+        (error, stdout, stderr) => {
+        if (error) {
+          resolve(`❌ Login failed: ${stderr || error.message}`);
+          return;
+        }
+        resolve(`✅ ${stdout}`);
+      });
+    });
+  });
+
+  ipcMain.handle('delete-token', async () => {
+    const tokenPath = path.join(__dirname, '..', 'token.json');
+    try {
+      if (fs.existsSync(tokenPath)) {
+        fs.unlinkSync(tokenPath);
+        return '✅ token.json 已刪除';
+      }
+      return '❌ token.json 不存在';
+    } catch (error) {
+      return `❌ 刪除失敗: ${error.message}`;
+    }
+  });
+
   app.on('activate', () => {
     // macOS 特有邏輯，沒有視窗就再開一個
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
