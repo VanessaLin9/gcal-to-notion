@@ -27,7 +27,7 @@
 
   btn.addEventListener('click', () => {
     console.log('hihi');
-      window.electronAPI.runSync().then((result) => {
+      window.electron.runSync().then((result) => {
         console.log('[RECEIVED]', result);
         output.textContent = result;
       });
