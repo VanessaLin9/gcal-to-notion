@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "main": "main.js",
   "scripts": {
-    "start": "electron .",
-    "build:css": "tailwindcss -i ./src/input.css -o ./dist/output.css --watch"
+    "build:css": "tailwindcss -i ./src/input.css -o ./dist/output.css --watch",
+    "build:css-once": "tailwindcss -i ./src/input.css -o ./dist/output.css",
+    "start": "npm run build:css-once && electron ."
   },
   "keywords": [],
   "author": "",

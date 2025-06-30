@@ -1,3 +1,6 @@
+/* tailwind */
+/* stylelint-disable */
+/* Tailwind CSS directives */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

@@ -3,19 +3,59 @@
 <head>
   <meta charset="UTF-8" />
   <title>Google Calendar to Notion Sync</title>
-  <link href="public/css/output.css" rel="stylesheet">
+  <link href="dist/output.css" rel="stylesheet">
 </head>
-<body>
-  <h1>Hello, GCal to Notion!</h1>
-  <button id="syncBtn">同步行事曆</button>
-  <button id="selectCredentials">選擇 credentials.json</button>
-  <button id="selectToken">選擇 token.json</button>
-  <button id="loginGoogle">登入 Google</button>
-  <button id="deleteToken">刪除 Token</button>
-  <p id="status"></p>
-  <pre id="output"></pre>
+
+<body class="bg-white text-gray-800 p-6 font-sans">
+  <h1 class="text-3xl font-bold mb-4">Sync Google Calendar to Notion</h1>
+
+  <!-- Tabs -->
+  <div class="mb-4 border-b border-gray-200">
+    <nav class="flex space-x-4" id="tabs">
+      <button data-tab="sync" class="tab-btn text-blue-600 border-b-2 border-blue-600">同步</button>
+      <button data-tab="auth" class="tab-btn text-gray-500 hover:text-blue-600">登入與憑證</button>
+      <button data-tab="settings" class="tab-btn text-gray-500 hover:text-blue-600">進階設定</button>
+    </nav>
+  </div>
+
+  <!-- Tab Contents -->
+  <div id="tab-contents">
+    <!-- 同步頁面 -->
+    <div id="tab-sync" class="tab-pane">
+      <div class="space-y-4">
+        <p class="text-gray-600">點擊下方按鈕開始同步 Google Calendar 到 Notion</p>
+        <button id="syncBtn" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">同步行事曆</button>
+        <div id="output" class="mt-4 p-4 bg-gray-100 rounded text-sm font-mono"></div>
+      </div>
+    </div>
+
+    <!-- 登入與憑證頁面 -->
+    <div id="tab-auth" class="tab-pane hidden">
+      <div class="space-y-4">
+        <p class="text-gray-600">管理 Google 登入憑證</p>
+        <div class="space-y-2">
+          <button id="loginGoogle" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">登入 Google</button>
+          <button id="selectCredentials" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">選擇 credentials.json</button>
+          <button id="selectToken" class="px-4 py-2 bg-yellow-600 text-white rounded hover:bg-yellow-700">選擇 token.json</button>
+          <button id="deleteToken" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">刪除 Token</button>
+        </div>
+        <div id="status" class="mt-4 p-4 bg-gray-100 rounded text-sm"></div>
+      </div>
+    </div>
+
+    <!-- 進階設定頁面 -->
+    <div id="tab-settings" class="tab-pane hidden">
+      <div class="space-y-4">
+        <p class="text-gray-600">進階設定選項</p>
+        <div class="p-4 bg-gray-100 rounded">
+          <p class="text-sm text-gray-500">設定功能開發中...</p>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <script>
+    // DOM 元素
     const syncBtn = document.getElementById('syncBtn');
     const output = document.getElementById('output');
     const status = document.getElementById('status');
@@ -24,32 +64,63 @@
     const loginGoogle = document.getElementById('loginGoogle');
     const deleteToken = document.getElementById('deleteToken');
 
+    // 切換 tab 功能
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const tab = btn.dataset.tab;
+        
+        // 更新按鈕狀態
+        document.querySelectorAll('.tab-btn').forEach(b => {
+          b.classList.remove('text-blue-600', 'border-blue-600');
+          b.classList.add('text-gray-500');
+        });
+        btn.classList.remove('text-gray-500');
+        btn.classList.add('text-blue-600', 'border-blue-600');
+
+        // 切換內容
+        document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.add('hidden'));
+        document.getElementById(`tab-${tab}`).classList.remove('hidden');
+      });
+    });
+    
+    // 同步按鈕功能
     syncBtn.addEventListener('click', () => {
       console.log('開始同步');
+      output.textContent = '同步中...';
       window.electron.runSync().then((result) => {
         console.log('[RECEIVED]', result);
         output.textContent = result;
       });
     });
 
+    // 登入 Google
     loginGoogle.addEventListener('click', async () => {
+      status.textContent = '登入中...';
       const result = await window.electron.loginGoogle();
-      alert(result);
+      status.textContent = result;
     });
     
+    // 選擇 credentials.json
     selectCredentials.addEventListener('click', async() => {
+      status.textContent = '選擇檔案中...';
       const message = await window.electron.selectCredential();
       status.textContent = message;
     });
 
+    // 選擇 token.json
     selectToken.addEventListener('click', async() => {
+      status.textContent = '選擇檔案中...';
       const message = await window.electron.selectToken();
       status.textContent = message;
     });
 
+    // 刪除 Token
     deleteToken.addEventListener('click', async () => {
-      const result = await window.electron.deleteToken();
-      alert(result);
+      if (confirm('確定要刪除 token.json 嗎？')) {
+        status.textContent = '刪除中...';
+        const result = await window.electron.deleteToken();
+        status.textContent = result;
+      }
     });
   </script>
 </body>
